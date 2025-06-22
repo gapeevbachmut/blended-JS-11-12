@@ -12,15 +12,25 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-import { allCategoryList } from './js/products-api';
+import { handleClickCategoryBtn } from './js/handlers';
+import { categories } from './js/refs';
+import {
+  allCategoryList,
+  getProducns,
+  getProducnsByCategory,
+} from './js/products-api';
+import { createMarkupList, createMarkupProducts } from './js/render-function';
 
-import { markupList } from './js/render-function';
+categories.addEventListener('click', handleClickCategoryBtn);
 
 async function initPage() {
   try {
     const data = await allCategoryList();
     console.log(data); //отримаємо масив значень  - список усіх категорій
-    markupList(data);
+    createMarkupList(data);
+
+    const products = await getProducns();
+    createMarkupProducts(products);
   } catch (error) {
     console.log(error);
     iziToast.error({
@@ -30,7 +40,15 @@ async function initPage() {
 }
 initPage();
 
+//2. При завантаженні сторінки Home отримай товари з API:
+// Зроби запит на ендпоінт №2 та отримай масив обʼєктів товарів, де skip = (поточна сторінка - 1) * 12. Приклад: для сторінки 2 → skip=12, для сторінки 3 → skip=24.
+
+//Відобрази товари на сторінці Home (пагінація: 12 товарів на сторінку).
+//  Використай HTML-шаблон товару для створення розмітки списку товарів і метод map() для перебору масиву товарів, який приходить з бекенду. Доповни шаблон необхідними даними і встав розмітку в ul.products.
 //
+// Реалізуй делегування на списку ul.categories
+
+// при кліку в обрану категорію потрібно прочитати текстовий контент кнопки і зробити запит по ендпоінту №6 підставивши в url прочитану категорію.
 //
 //
 //
@@ -43,20 +61,6 @@ initPage();
 //
 
 // зробити запит на сервер для отримання усіх категорій
-
-// async function allCategories() {
-//   const { data } = await axios(`${BASE_URL}${END_POINT_categories}`);
-//   // { data } - it is response.data
-//   return data;
-// }
-// //  категорії продуктів  має властивості - name    slug       url
-// allCategories()
-//   .then(data => {
-//     console.log(data); //отримаємо масив об'єктів з категоріями продуктів
-//   })
-//   .catch(error => {
-//     console.log(error.message);
-//   });
 
 //                               список категорій товарів - /category-list
 
