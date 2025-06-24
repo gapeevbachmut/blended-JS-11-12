@@ -3,8 +3,8 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-import { handleClickCategoryBtn } from './js/handlers';
-import { categories } from './js/refs';
+import { handleClickCategoryBtn, handleLoadMore } from './js/handlers';
+import { categories, loadMoreBtn } from './js/refs';
 import {
   allCategoryList,
   getProducts,
@@ -13,8 +13,10 @@ import {
 import { createMarkupList, createMarkupProducts } from './js/render-function';
 
 categories.addEventListener('click', handleClickCategoryBtn);
+loadMoreBtn.addEventListener('click', handleLoadMore);
 
 let currentPage = 1;
+let currentCategory = 'All'; // за замовчуваееям
 
 async function initPage() {
   try {

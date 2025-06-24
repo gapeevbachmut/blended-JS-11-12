@@ -10,3 +10,5 @@ export const products = document.querySelector('.products');
 //Знаходимо всі кнопки в ul.categories
 
 export const notFound = document.querySelector('.not-found');
+
+export const loadMoreBtn = document.querySelector('.load-more-btn');

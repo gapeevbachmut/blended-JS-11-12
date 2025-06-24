@@ -1,25 +1,24 @@
 // Функції, які передаються колбеками в addEventListners
 
-import { products, notFound } from './refs'; // елемент розмітки
+import { products, notFound, loadMoreBtn } from './refs'; // елемент розмітки
 import { getProducts, getProducnsByCategory } from './products-api';
 import { createMarkupProducts } from './render-function'; // розмітка
 
 let currentPage = 1;
+let currentCategory;
 
 export async function handleClickCategoryBtn(event) {
-  //делегування на списку ul.categories
-  // Перевірка: натиснута саме кнопка
+  const clickedElement = event.target; // елемент на який клікнули
+  // чи натиснута саме кнопка
   if (!event.target.classList.contains('categories__btn')) {
     console.log('not a btn');
     return;
   }
-  const clickedElement = event.target; // елемент на який клікнули
 
   const category = event.target.textContent;
+  currentCategory = category; //  записую активну категорію
 
-  // запам`ятати активну категорію
-
-  /////////////////////////////
+  /////////////////////////////              ???
   //  при кліку на одну з кнопок .categories__btn, треба:
   // Зняти клас categories__btn--active з усіх кнопок (є тільки один активний).  Додати цей клас до тієї кнопки, яку натиснули.
   //Очистити активні класи з усіх кнопок. шукає по ВСІЙ сторінці,
@@ -33,7 +32,7 @@ export async function handleClickCategoryBtn(event) {
   products.innerHTML = ''; // очищаємо список, якщо він був
   currentPage = 1; //  початок з першої сторінки
 
-  let items;
+  let items = [];
   try {
     if (category === 'All') {
       items = await getProducts(currentPage);
@@ -43,17 +42,22 @@ export async function handleClickCategoryBtn(event) {
     // Якщо товарів немає — показати повідомлення
     if (!items.length) {
       notFound.classList.add('not-found--visible');
-
+      loadMoreBtn.classList.add('hidden'); //  ховаємо кнопку
       return;
     } else {
       notFound.classList.remove('not-found--visible');
     }
-    // console.log('items', items);
+    console.log('btn-category', items);
 
     //
     createMarkupProducts(items);
     //
-
+    // Показати кнопку, якщо є ще товари (рівно 12 — імовірність, що ще будуть)
+    if (items.length === 12) {
+      loadMoreBtn.classList.remove('hidden');
+    } else {
+      loadMoreBtn.classList.add('hidden');
+    }
     //
   } catch (error) {
     console.log(error);
@@ -63,4 +67,34 @@ export async function handleClickCategoryBtn(event) {
   // при кліку виводится назва кнопки
   // при кліку в обрану категорію потрібно прочитати текстовий контент кнопки
   // console.log('category', category);
+}
+
+//         Функція обробки Load More
+
+export async function handleLoadMore() {
+  currentPage += 1;
+
+  try {
+    let items = [];
+
+    if (currentCategory === 'All') {
+      items = await getProducts(currentPage);
+    } else {
+      items = await getProducnsByCategory(currentCategory, currentPage);
+    }
+
+    if (!items.length) {
+      loadMoreBtn.classList.add('hidden');
+      return;
+    }
+
+    createMarkupProducts(items);
+    console.log('btn-load-More', items);
+
+    if (items.length < 12) {
+      loadMoreBtn.classList.add('hidden');
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
