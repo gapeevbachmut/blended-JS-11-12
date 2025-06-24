@@ -1,7 +1,7 @@
 //Функцію для створення, рендеру або видалення розмітки
 
 import { categories, products } from './refs';
-
+//  Створюю кнопку для кожної категорії
 export function createMarkupList(data) {
   const markupList = data
     .map(
