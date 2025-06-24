@@ -1,8 +1,13 @@
 // Функції, які передаються колбеками в addEventListners
 
 import { products, notFound, loadMoreBtn } from './refs'; // елемент розмітки
-import { getProducts, getProducnsByCategory } from './products-api';
-import { createMarkupProducts } from './render-function'; // розмітка
+import {
+  getProducts,
+  getProductsByCategory,
+  getProductById,
+} from './products-api';
+import { createMarkupProducts, renderModalProduct } from './render-function'; // розмітка
+import { openModal } from './modal';
 
 let currentPage = 1;
 let currentCategory;
@@ -37,7 +42,7 @@ export async function handleClickCategoryBtn(event) {
     if (category === 'All') {
       items = await getProducts(currentPage);
     } else {
-      items = await getProducnsByCategory(category, currentPage);
+      items = await getProductsByCategory(category, currentPage);
     }
     // Якщо товарів немає — показати повідомлення
     if (!items.length) {
@@ -49,10 +54,10 @@ export async function handleClickCategoryBtn(event) {
     }
     console.log('btn-category', items);
 
-    //
     createMarkupProducts(items);
-    //
+
     // Показати кнопку, якщо є ще товари (рівно 12 — імовірність, що ще будуть)
+
     if (items.length === 12) {
       loadMoreBtn.classList.remove('hidden');
     } else {
@@ -80,7 +85,7 @@ export async function handleLoadMore() {
     if (currentCategory === 'All') {
       items = await getProducts(currentPage);
     } else {
-      items = await getProducnsByCategory(currentCategory, currentPage);
+      items = await getProductsByCategory(currentCategory, currentPage);
     }
 
     if (!items.length) {
@@ -96,5 +101,23 @@ export async function handleLoadMore() {
     }
   } catch (error) {
     console.error(error);
+  }
+}
+
+//       клік по картці
+
+export async function handleClickProductCard(event) {
+  const productItem = event.target.closest('.products__item');
+  if (!productItem) return;
+
+  const productId = productItem.dataset.id;
+  if (!productId) return;
+
+  try {
+    const product = await getProductById(productId);
+    renderModalProduct(product);
+    openModal();
+  } catch (error) {
+    console.error('Error loading product', error);
   }
 }

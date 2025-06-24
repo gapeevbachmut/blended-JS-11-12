@@ -1,6 +1,6 @@
 //Функцію для створення, рендеру або видалення розмітки
 
-import { categories, products } from './refs';
+import { categories, products, modalProduct } from './refs';
 //  Створюю кнопку для кожної категорії
 export function createMarkupList(data) {
   const markupList = data
@@ -35,4 +35,35 @@ export function createMarkupProducts(data) {
     )
     .join('');
   products.insertAdjacentHTML('beforeend', markupProducts);
+}
+
+//            MODAL   WINDOW
+
+export function renderModalProduct(product) {
+  const {
+    title,
+    description,
+    price,
+    images,
+    tags = ['eco', 'new'], // fallback для тесту
+    shipping = 'Free shipping available',
+    returnPolicy = '30-day return',
+  } = product;
+
+  const markup = `
+    <img class="modal-product__img" src="${images?.[0] || ''}" alt="${title}" />
+    <div class="modal-product__content">
+      <p class="modal-product__title">${title}</p>
+      <ul class="modal-product__tags">
+        ${tags.map(tag => `<li>${tag}</li>`).join('')}
+      </ul>
+      <p class="modal-product__description">${description}</p>
+      <p class="modal-product__shipping-information">Shipping: ${shipping}</p>
+      <p class="modal-product__return-policy">Return Policy: ${returnPolicy}</p>
+      <p class="modal-product__price">Price: $${price}</p>
+      <button class="modal-product__buy-btn" type="button">Buy</button>
+    </div>
+  `;
+
+  modalProduct.innerHTML = markup;
 }

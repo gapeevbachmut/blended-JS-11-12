@@ -3,20 +3,28 @@
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 
-import { handleClickCategoryBtn, handleLoadMore } from './js/handlers';
-import { categories, loadMoreBtn } from './js/refs';
+import {
+  handleClickCategoryBtn,
+  handleLoadMore,
+  handleClickProductCard,
+} from './js/handlers';
+
+import { categories, loadMoreBtn, products } from './js/refs';
+
 import {
   allCategoryList,
   getProducts,
-  getProducnsByCategory,
+  getProductsByCategory,
 } from './js/products-api';
+
 import { createMarkupList, createMarkupProducts } from './js/render-function';
 
 categories.addEventListener('click', handleClickCategoryBtn);
+products.addEventListener('click', handleClickProductCard);
 loadMoreBtn.addEventListener('click', handleLoadMore);
 
 let currentPage = 1;
-let currentCategory = 'All'; // за замовчуваееям
+let currentCategory = 'All'; // за замовчуванням
 
 async function initPage() {
   try {
@@ -49,4 +57,3 @@ initPage();
 //
 //
 //
-//до кнопки обраної категорії потрібно додати клас categories__btn--active , щоб стилізувати її активною.
