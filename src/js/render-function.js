@@ -1,6 +1,8 @@
 //Функцію для створення, рендеру або видалення розмітки
 
 import { categories, products, modalProduct } from './refs';
+import { isInCart } from './storage';
+
 //  Створюю кнопку для кожної категорії
 export function createMarkupList(data) {
   const markupList = data
@@ -41,6 +43,7 @@ export function createMarkupProducts(data) {
 
 export function renderModalProduct(product) {
   const {
+    id,
     title,
     description,
     price,
@@ -50,7 +53,10 @@ export function renderModalProduct(product) {
     returnPolicy = '30-day return',
   } = product;
 
+  const inCart = isInCart(id);
+
   const markup = `
+  <div class="modal-product" data-id="${id}">
     <img class="modal-product__img" src="${images?.[0] || ''}" alt="${title}" />
     <div class="modal-product__content">
       <p class="modal-product__title">${title}</p>
@@ -61,9 +67,15 @@ export function renderModalProduct(product) {
       <p class="modal-product__shipping-information">Shipping: ${shipping}</p>
       <p class="modal-product__return-policy">Return Policy: ${returnPolicy}</p>
       <p class="modal-product__price">Price: $${price}</p>
-      <button class="modal-product__buy-btn" type="button">Buy</button>
+      
+      
     </div>
+  </div>
   `;
 
   modalProduct.innerHTML = markup;
 }
+// <button class="modal-product__buy-btn" type="button">Buy</button>
+// <button class="modal-product__btn modal-product__btn--cart" type="button">
+// ${inCart ? 'Remove from Cart' : 'Add to Cart'}
+// </button>

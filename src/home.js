@@ -9,6 +9,7 @@ import {
   handleClickProductCard,
   handleSearchSubmit,
   handleClearSearch,
+  handleCartBtnClick,
 } from './js/handlers';
 
 import {
@@ -39,6 +40,14 @@ searchInput.addEventListener('input', () => {
     clearSearchBtn.classList.remove('hidden');
   } else {
     clearSearchBtn.classList.add('hidden');
+  }
+});
+//
+
+// Додаємо делегування на кнопку cart в модалці
+document.addEventListener('click', event => {
+  if (event.target.classList.contains('modal-product__btn--cart')) {
+    handleCartBtnClick(event);
   }
 });
 

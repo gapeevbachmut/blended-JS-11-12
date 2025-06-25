@@ -13,6 +13,7 @@ import {
   getProductById,
   searchProducts,
 } from './products-api';
+import { addToCart, removeFromCart, isInCart } from './storage';
 import { createMarkupProducts, renderModalProduct } from './render-function'; // розмітка
 import { openModal } from './modal';
 
@@ -174,4 +175,25 @@ export async function handleClearSearch() {
   } catch (error) {
     console.error('Clear search error', error);
   }
+}
+
+//       Обробка кліку по кнопці в модалці
+
+export function handleCartBtnClick(event) {
+  const btn = event.target;
+  const productId = btn.closest('.modal-product').dataset.id;
+
+  if (!productId) return;
+
+  const idNum = Number(productId);
+
+  if (isInCart(idNum)) {
+    removeFromCart(idNum);
+    btn.textContent = 'Add to Cart';
+  } else {
+    addToCart(idNum);
+    btn.textContent = 'Remove from Cart';
+  }
+
+  // опціонально: оновити лічильник у хедері
 }
