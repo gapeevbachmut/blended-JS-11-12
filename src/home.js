@@ -7,9 +7,18 @@ import {
   handleClickCategoryBtn,
   handleLoadMore,
   handleClickProductCard,
+  handleSearchSubmit,
+  handleClearSearch,
 } from './js/handlers';
 
-import { categories, loadMoreBtn, products } from './js/refs';
+import {
+  categories,
+  loadMoreBtn,
+  products,
+  searchForm,
+  searchInput,
+  clearSearchBtn,
+} from './js/refs';
 
 import {
   allCategoryList,
@@ -19,10 +28,21 @@ import {
 
 import { createMarkupList, createMarkupProducts } from './js/render-function';
 
-categories.addEventListener('click', handleClickCategoryBtn);
-products.addEventListener('click', handleClickProductCard);
-loadMoreBtn.addEventListener('click', handleLoadMore);
+categories.addEventListener('click', handleClickCategoryBtn); //  кнопки - категорії
+products.addEventListener('click', handleClickProductCard); //  відмалювання карток продуктів
+loadMoreBtn.addEventListener('click', handleLoadMore); // кнопка  ЩЕ
+searchForm.addEventListener('submit', handleSearchSubmit); //  сабміт форми
+clearSearchBtn.addEventListener('click', handleClearSearch); // Слухач на кнопку "×"
+// Слухач на input — показати/сховати ×
+searchInput.addEventListener('input', () => {
+  if (searchInput.value.trim()) {
+    clearSearchBtn.classList.remove('hidden');
+  } else {
+    clearSearchBtn.classList.add('hidden');
+  }
+});
 
+//
 let currentPage = 1;
 let currentCategory = 'All'; // за замовчуванням
 

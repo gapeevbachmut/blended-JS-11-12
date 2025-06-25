@@ -1,10 +1,17 @@
 // Функції, які передаються колбеками в addEventListners
 
-import { products, notFound, loadMoreBtn } from './refs'; // елемент розмітки
+import {
+  products,
+  notFound,
+  loadMoreBtn,
+  searchInput,
+  clearSearchBtn,
+} from './refs'; // елемент розмітки
 import {
   getProducts,
   getProductsByCategory,
   getProductById,
+  searchProducts,
 } from './products-api';
 import { createMarkupProducts, renderModalProduct } from './render-function'; // розмітка
 import { openModal } from './modal';
@@ -119,5 +126,52 @@ export async function handleClickProductCard(event) {
     openModal();
   } catch (error) {
     console.error('Error loading product', error);
+  }
+}
+
+//              обробка сабміту форми пошуку
+
+export async function handleSearchSubmit(event) {
+  event.preventDefault();
+
+  const query = searchInput.value.trim();
+  if (!query) return;
+
+  try {
+    const result = await searchProducts(query, 1);
+    products.innerHTML = '';
+
+    if (!result.length) {
+      notFound.classList.add('not-found--visible');
+      loadMoreBtn.classList.add('hidden');
+    } else {
+      createMarkupProducts(result);
+      notFound.classList.remove('not-found--visible');
+      loadMoreBtn.classList.add('hidden'); //  не використовуємо load more для пошуку
+    }
+  } catch (error) {
+    console.error('Search error', error);
+  }
+}
+
+//    обробка енопки очистити пошук
+
+export async function handleClearSearch() {
+  searchInput.value = '';
+  clearSearchBtn.classList.add('hidden');
+
+  try {
+    const result = await getProducts(1);
+    products.innerHTML = '';
+
+    if (!result.length) {
+      notFound.classList.add('not-found--visible');
+    } else {
+      createMarkupProducts(result);
+      notFound.classList.remove('not-found--visible');
+      loadMoreBtn.classList.remove('hidden'); //  знову показуємо load more
+    }
+  } catch (error) {
+    console.error('Clear search error', error);
   }
 }

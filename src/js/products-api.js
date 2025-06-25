@@ -48,3 +48,15 @@ export async function getProductById(productId) {
 
   return data;
 }
+
+//             Запит на пошук по API
+//   ендпоінт №4:  https://dummyjson.com/products/search?q=...
+
+export async function searchProducts(query, currentPage = 1) {
+  const { data } = await axios.get(
+    `${BASE_URL}/search?q=${encodeURIComponent(query)}&limit=12&skip=${
+      (currentPage - 1) * 12
+    }`
+  );
+  return data.products;
+}
