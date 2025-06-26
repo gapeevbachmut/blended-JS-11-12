@@ -2,6 +2,8 @@
 
 const CART_KEY = 'cart';
 
+import { cartCount } from './refs';
+
 export function getCartItems() {
   const raw = localStorage.getItem(CART_KEY);
   return raw ? JSON.parse(raw) : [];
@@ -27,3 +29,10 @@ export function isInCart(productId) {
   return getCartItems().includes(productId);
 }
 //  перевіряє, чи знаходиться товар у кошику. отримує поточний вміст кошика і перевіряє, чи містить масив productId. повертає true, якщо товар є в кошику, і false — якщо немає.
+//
+
+//  оновлюємо значення
+export function updateCartCounter() {
+  const cart = getCartItems();
+  cartCount.textContent = cart.length;
+}

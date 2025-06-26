@@ -29,6 +29,10 @@ import {
 
 import { createMarkupList, createMarkupProducts } from './js/render-function';
 
+import { updateCartCounter } from './js/storage';
+
+updateCartCounter(); // одразу оновлюємо лічильник при завантаженні
+
 categories.addEventListener('click', handleClickCategoryBtn); //  кнопки - категорії
 products.addEventListener('click', handleClickProductCard); //  відмалювання карток продуктів
 loadMoreBtn.addEventListener('click', handleLoadMore); // кнопка  ЩЕ

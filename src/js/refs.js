@@ -20,8 +20,12 @@ export const modalProduct = document.querySelector('.modal-product');
 export const modalCloseBtn = document.querySelector('.modal__close-btn');
 export const modalContent = document.querySelector('.modal__content');
 
-//         пошук
+//         пошук товарів
 
 export const searchForm = document.querySelector('.search-form');
 export const searchInput = document.querySelector('.search-form__input');
 export const clearSearchBtn = document.querySelector('.search-form__btn-clear');
+
+//     Коли продукт додається або видаляється — потрібно: Оновити його значення: .textContent = cart.length
+
+export const cartCount = document.querySelector('[data-cart-count]');
