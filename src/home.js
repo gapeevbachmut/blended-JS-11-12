@@ -10,6 +10,7 @@ import {
   handleSearchSubmit,
   handleClearSearch,
   handleCartBtnClick,
+  handleWishlistBtnClick,
 } from './js/handlers';
 
 import {
@@ -19,25 +20,53 @@ import {
   searchForm,
   searchInput,
   clearSearchBtn,
+  notFound,
+  cartCount,
+  wishlistCount,
+  // themeToggleBtn,
 } from './js/refs';
 
 import {
   allCategoryList,
   getProducts,
+  getProductById,
   getProductsByCategory,
 } from './js/products-api';
 
 import { createMarkupList, createMarkupProducts } from './js/render-function';
+// import { toggleTheme } from './js/helpers';
 
-import { updateCartCounter } from './js/storage';
+import {
+  updateCartCounter,
+  updateWishlistCounter,
+  getWishlistItems,
+  getCartItems,
+} from './js/storage';
 
 updateCartCounter(); // одразу оновлюємо лічильник при завантаженні
+updateWishlistCounter(); // Ініціалізація лічильника при завантаженні
+initWishlistPage(); // Запуск сторінки
+initCartPage();
+//
+//
+//
+const cartItemsEl = document.querySelector('[data-cart-items]');
+const cartTotalEl = document.querySelector('[data-cart-total]');
+// const buyBtn = document.querySelector('.buy-btn'); // cart-summary__btn
+const buyBtn = document.querySelector('.cart-summary__btn'); //
 
+const loader = document.querySelector('.loader');
+const scrollUpBtn = document.querySelector('.scroll-up-btn');
+//
+//
 categories.addEventListener('click', handleClickCategoryBtn); //  кнопки - категорії
 products.addEventListener('click', handleClickProductCard); //  відмалювання карток продуктів
 loadMoreBtn.addEventListener('click', handleLoadMore); // кнопка  ЩЕ
 searchForm.addEventListener('submit', handleSearchSubmit); //  сабміт форми
 clearSearchBtn.addEventListener('click', handleClearSearch); // Слухач на кнопку "×"
+//
+// themeToggleBtn.addEventListener('click', toggleTheme);
+// const themeToggleBtn = document.querySelector('.theme-toggle-btn');
 // Слухач на input — показати/сховати ×
 searchInput.addEventListener('input', () => {
   if (searchInput.value.trim()) {
@@ -55,7 +84,43 @@ document.addEventListener('click', event => {
   }
 });
 
+//             слухач для wishlist-кнопки
+//              Клік по кнопці Wishlist в модалці
+document.addEventListener('click', event => {
+  if (event.target.classList.contains('modal-product__btn--wishlist')) {
+    handleWishlistBtnClick(event);
+  }
+  if (event.target.classList.contains('modal-product__btn--cart')) {
+    handleCartBtnClick(event);
+  }
+});
 //
+
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-product__btn--cart')) {
+    handleCartBtnClick(e);
+  }
+  if (e.target.classList.contains('modal-product__btn--wishlist')) {
+    handleWishlistBtnClick(e);
+  }
+});
+
+// buyBtn.addEventListener('click', () => {
+//   iziToast.success({
+//     title: 'Success',
+//     message: 'Your purchase was successful! 🎉',
+//     position: 'topRight',
+//   });
+// });
+
+// scrollUpBtn.addEventListener('click', () => {
+//   window.scrollTo({ top: 0, behavior: 'smooth' });
+// });
+
+// document.addEventListener('DOMContentLoaded', () => {
+//   applySavedTheme();
+// });
+
 let currentPage = 1;
 let currentCategory = 'All'; // за замовчуванням
 
@@ -90,3 +155,63 @@ initPage();
 //
 //
 //
+async function initWishlistPage() {
+  const ids = getWishlistItems();
+  products.innerHTML = '';
+
+  if (!ids.length) {
+    notFound.classList.add('not-found--visible');
+    return;
+  }
+
+  try {
+    const promises = ids.map(id => getProductById(id));
+    const items = await Promise.all(promises);
+
+    createMarkupProducts(items);
+    notFound.classList.remove('not-found--visible');
+  } catch (error) {
+    console.error('Error loading wishlist:', error);
+    notFound.classList.add('not-found--visible');
+  }
+
+  updateCartCounter();
+  updateWishlistCounter();
+}
+
+////////////////////////////////
+
+async function initCartPage() {
+  const ids = getCartItems();
+  products.innerHTML = '';
+  notFound.classList.remove('not-found--visible');
+  cartItemsEl.textContent = '0';
+  cartTotalEl.textContent = '$0';
+  loader.classList.remove('hidden');
+
+  if (!ids.length) {
+    notFound.classList.add('not-found--visible');
+    loader.classList.add('hidden');
+    return;
+  }
+
+  try {
+    const promises = ids.map(id => getProductById(id));
+    const items = await Promise.all(promises);
+
+    createMarkupProducts(items);
+
+    // Update totals
+    cartItemsEl.textContent = items.length;
+    cartTotalEl.textContent =
+      '$' + items.reduce((sum, item) => sum + item.price, 0);
+
+    updateCartCounter();
+    updateWishlistCounter();
+  } catch (error) {
+    console.error('Cart error:', error);
+    notFound.classList.add('not-found--visible');
+  } finally {
+    loader.classList.add('hidden');
+  }
+}

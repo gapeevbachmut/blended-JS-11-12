@@ -202,3 +202,21 @@ export function handleCartBtnClick(event) {
 
   updateCartCounter(); // оновити лічильник у хедері
 }
+
+//              Wishlist
+
+export function handleWishlistBtnClick(event) {
+  const btn = event.target;
+  const productId = Number(btn.closest('.modal-product').dataset.id);
+  if (!productId) return;
+
+  if (isInWishlist(productId)) {
+    removeFromWishlist(productId);
+    btn.textContent = 'Add to Wishlist';
+  } else {
+    addToWishlist(productId);
+    btn.textContent = 'Remove from Wishlist';
+  }
+
+  updateWishlistCounter(); // оновлення лічильника
+}

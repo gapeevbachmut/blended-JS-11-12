@@ -1,7 +1,7 @@
 //Функцію для створення, рендеру або видалення розмітки
 
 import { categories, products, modalProduct } from './refs';
-import { isInCart } from './storage';
+import { isInCart, isInWishlist } from './storage';
 
 //  Створюю кнопку для кожної категорії
 export function createMarkupList(data) {
@@ -48,12 +48,13 @@ export function renderModalProduct(product) {
     description,
     price,
     images,
-    tags = ['eco', 'new'], // fallback для тесту
+    tags = [],
     shipping = 'Free shipping available',
     returnPolicy = '30-day return',
   } = product;
 
   const inCart = isInCart(id);
+  const inWishlist = isInWishlist(id);
 
   const markup = `
   <div class="modal-product" data-id="${id}">
@@ -67,15 +68,17 @@ export function renderModalProduct(product) {
       <p class="modal-product__shipping-information">Shipping: ${shipping}</p>
       <p class="modal-product__return-policy">Return Policy: ${returnPolicy}</p>
       <p class="modal-product__price">Price: $${price}</p>
-      
-      
+      <div class="modal-product__actions">
+          <button class="modal-product__btn modal-product__btn--wishlist" type="button">
+            ${inWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          </button>
+          <button class="modal-product__btn modal-product__btn--cart" type="button">
+            ${inCart ? 'Remove from Cart' : 'Add to Cart'}
+          </button>
+        </div>
     </div>
   </div>
   `;
 
   modalProduct.innerHTML = markup;
 }
-// <button class="modal-product__buy-btn" type="button">Buy</button>
-// <button class="modal-product__btn modal-product__btn--cart" type="button">
-// ${inCart ? 'Remove from Cart' : 'Add to Cart'}
-// </button>

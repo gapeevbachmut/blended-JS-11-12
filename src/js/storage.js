@@ -1,8 +1,10 @@
 //Робота з loacalStorage
 
 const CART_KEY = 'cart';
+const WISHLIST_KEY = 'wishlist';
 
-import { cartCount } from './refs';
+import { wishlistCount, cartCount } from './refs';
+//
 
 export function getCartItems() {
   const raw = localStorage.getItem(CART_KEY);
@@ -35,4 +37,35 @@ export function isInCart(productId) {
 export function updateCartCounter() {
   const cart = getCartItems();
   cartCount.textContent = cart.length;
+}
+
+//               Wishlist
+
+//
+//  отримуємо масив ID із localStorage
+export function getWishlistItems() {
+  const raw = localStorage.getItem(WISHLIST_KEY);
+  return raw ? JSON.parse(raw) : [];
+}
+
+export function addToWishlist(productId) {
+  const list = getWishlistItems();
+  if (!list.includes(productId)) {
+    list.push(productId);
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+  }
+}
+
+export function removeFromWishlist(productId) {
+  const list = getWishlistItems().filter(id => id !== productId);
+  localStorage.setItem(WISHLIST_KEY, JSON.stringify(list));
+}
+
+export function isInWishlist(productId) {
+  return getWishlistItems().includes(productId);
+}
+
+export function updateWishlistCounter() {
+  const list = getWishlistItems();
+  wishlistCount.textContent = list.length;
 }

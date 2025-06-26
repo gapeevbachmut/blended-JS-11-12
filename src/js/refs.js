@@ -29,3 +29,10 @@ export const clearSearchBtn = document.querySelector('.search-form__btn-clear');
 //     Коли продукт додається або видаляється — потрібно: Оновити його значення: .textContent = cart.length
 
 export const cartCount = document.querySelector('[data-cart-count]');
+
+// посилання на лічильник
+
+export const wishlistCount = document.querySelector('[data-wishlist-count]');
+
+//
+export const themeToggleBtn = document.querySelector('.theme-toggle-btn');
