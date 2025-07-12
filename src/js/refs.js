@@ -1,38 +1,24 @@
 //Обʼєкт з посиланнями на ДОМ елементи
 
-export const refs = {};
+export const refs = {
+  categories: document.querySelector('.categories'), //  отримаємо ul.categories
+  products: document.querySelector('.products'), //  отримуємо ul.products
+  loadMoreBtn: document.querySelector('.load-more-btn'), // кнопка  load More
+  notFound: document.querySelector('.not-found'),
 
-export const categories = document.querySelector('.categories');
-//  отримаємо ul.categories
-export const products = document.querySelector('.products');
-//  отримуємо ul.products
-// export const buttons = categories.querySelectorAll('.categories__btn');
-//Знаходимо всі кнопки в ul.categories
+  //           модальне вікно
 
-export const notFound = document.querySelector('.not-found');
+  modalWindow: document.querySelector('.modal'),
+  modalContent: document.querySelector('.modal__content'),
+  modalCloseBtn: document.querySelector('.modal__close-btn'), // хрестик
+  modalProduct: document.querySelector('.modal-product'),
+  modalProductBtnCart: document.querySelector('.modal-product__btn--cart'), //  кнопка додавання товару у кошик
 
-export const loadMoreBtn = document.querySelector('.load-more-btn');
+  //          пошук товарів
 
-//     MODAL  WINDOW
+  searchForm: document.querySelector('.search-form'), // форма пошуку
+  searchFormInput: document.querySelector('.search-form__input'), //   input
+  searchClearBtn: document.querySelector('.search-form__btn-clear'), // хрестик - очищення пошуку
 
-export const modal = document.querySelector('.modal');
-export const modalProduct = document.querySelector('.modal-product');
-export const modalCloseBtn = document.querySelector('.modal__close-btn');
-export const modalContent = document.querySelector('.modal__content');
-
-//         пошук товарів
-
-export const searchForm = document.querySelector('.search-form');
-export const searchInput = document.querySelector('.search-form__input');
-export const clearSearchBtn = document.querySelector('.search-form__btn-clear');
-
-//     Коли продукт додається або видаляється — потрібно: Оновити його значення: .textContent = cart.length
-
-export const cartCount = document.querySelector('[data-cart-count]');
-
-// посилання на лічильник
-
-export const wishlistCount = document.querySelector('[data-wishlist-count]');
-
-//
-export const themeToggleBtn = document.querySelector('.theme-toggle-btn');
+  //              кошик
+};

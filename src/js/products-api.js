@@ -1,62 +1,62 @@
 // Функції для роботи з бекендом
 
 import axios from 'axios';
-import { categories } from './refs';
 
-const BASE_URL = 'https://dummyjson.com/products'; // ???
-// const END_POINT_categories = '/categories';
-const END_POINT_category_list = '/category-list';
-const productId = '/:id'; //         -   ???
+import { BASE_URL, END_POINT } from './constants';
 
-// const END_POINT_pagination = `?limit=12&skip=${(currentPage - 1) * 12}`;
+import { handleSubmitSearchForm } from './handlers';
 
-export async function allCategoryList() {
-  const { data } = await axios(`${BASE_URL}${END_POINT_category_list}`); //  запит на сервер
+const productCartId = '/:id'; // ???  з енд поінтом не працює, якщо записати туди id   ???
+
+// створити функції для усіх необхідних запитів на  сервер
+
+export async function getAllCategoryList() {
+  const { data } = await axios(`${BASE_URL}${END_POINT.category_list}`); //  запит на сервер
   data.unshift('All'); // Додає "All" в початок масиву категорій
-
   return data;
 }
 
-export async function getProducts(currentPage = 1) {
+//  запит на список продуктів з пагінацією
+
+export async function getProductsList(currentPage = 1) {
   const { data } = await axios(
     `${BASE_URL}?limit=12&skip=${(currentPage - 1) * 12}`
   );
-  // console.log('1', data.products);
-
   return data.products;
 }
-// https://dummyjson.com/products/category/smartphones
-//  запит на сервер ждя отримання списку по категоріях
-//  зробити запит по ендпоінту №6 підставивши в url прочитану категорію.
-//  отриманий масив обʼєктів продуктів потрібно відрендерити в списку ul.products з пагінацією 12 продуктів на сторінку
+
+// запит на ендпоінт по категорії з пагінацією
 
 export async function getProductsByCategory(category, currentPage = 1) {
   const { data } = await axios(
     `${BASE_URL}/category/${category}?limit=12&skip=${(currentPage - 1) * 12}`
   );
-  // console.log('btn', data.products);
-  // console.log('btn-category', category);
-
+  // console.log(data.products); // отримаємо масив продуктів за категорією
   return data.products;
 }
 
-//        запит по id
+// запит на ендпоінт по id
 
-export async function getProductById(productId) {
-  const { data } = await axios.get(`${BASE_URL}/${productId}`);
-  console.log(data);
+export async function getProductsById(productCartId) {
+  const { data } = await axios(`${BASE_URL}/${productCartId} `);
+  // console.log('getProductsById', data); // отримую об'єкт продукта
+  // console.log('data', data);
 
   return data;
 }
+//
+//
+//  запит по пошуку
+//https://dummyjson.com/products/search?q=nail - пошук продукту по ключовому слову
+//  при сабміті запит на бекенд по ендпоінту №4 підставивши value інпута в url.
+//
+//
+// параметр з інпута - що шукає користувач
 
-//             Запит на пошук по API
-//   ендпоінт №4:  https://dummyjson.com/products/search?q=...
-
-export async function searchProducts(query, currentPage = 1) {
-  const { data } = await axios.get(
-    `${BASE_URL}/search?q=${encodeURIComponent(query)}&limit=12&skip=${
-      (currentPage - 1) * 12
-    }`
+export async function getSearchProducts(queryInput, currentPage = 1) {
+  const { data } = await axios(
+    `${BASE_URL}/search?q=${queryInput}&limit=12&skip=${(currentPage - 1) * 12}`
   );
+  // console.log(data.products); //  отримаю масив продуктів за запитом
   return data.products;
 }

@@ -15,7 +15,8 @@
   }
 }
 
-.categories__btn {
+.categories__btn,
+.load-more-btn {
   padding: 0.8rem 1.5rem;
 
   color: #2d3748;

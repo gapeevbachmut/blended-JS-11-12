@@ -1,222 +1,259 @@
 // Функції, які передаються колбеками в addEventListners
 
-import {
-  products,
-  notFound,
-  loadMoreBtn,
-  searchInput,
-  clearSearchBtn,
-} from './refs'; // елемент розмітки
-import {
-  getProducts,
-  getProductsByCategory,
-  getProductById,
-  searchProducts,
-} from './products-api';
-
-import {
-  addToCart,
-  removeFromCart,
-  isInCart,
-  updateCartCounter,
-} from './storage';
-
-import { createMarkupProducts, renderModalProduct } from './render-function'; // розмітка
+import { refs } from './refs';
 import { openModal } from './modal';
+import {
+  getProductsByCategory,
+  getProductsList,
+  getProductsById,
+  getSearchProducts,
+} from './products-api';
+import { createMarkupProducts, renderModalProduct } from './render-function';
 
-let currentPage = 1;
-let currentCategory;
+//
 
-export async function handleClickCategoryBtn(event) {
-  const clickedElement = event.target; // елемент на який клікнули
+let currentPage = 1; // тут зберігаємо поточну сторінку
+let currentCategory; // категорія при кліку на кнопку
+
+//
+//
+//                          клік  по кнопці  категорій
+//
+//
+
+export async function handleClickCategoriesBtn(event) {
+  // console.log('click', event.target); // там де клік
+  //
   // чи натиснута саме кнопка
   if (!event.target.classList.contains('categories__btn')) {
-    console.log('not a btn');
+    console.log('not btn');
     return;
   }
 
-  const category = event.target.textContent;
-  currentCategory = category; //  записую активну категорію
+  const category = event.target.textContent; // текст кнопки
+  currentCategory = category; //у глобальну область
 
-  /////////////////////////////              ???
-  //  при кліку на одну з кнопок .categories__btn, треба:
-  // Зняти клас categories__btn--active з усіх кнопок (є тільки один активний).  Додати цей клас до тієї кнопки, яку натиснули.
-  //Очистити активні класи з усіх кнопок. шукає по ВСІЙ сторінці,
-  document
-    .querySelectorAll('.categories__btn--active')
-    .forEach(btn => btn.classList.remove('categories__btn--active'));
-  // Додати клас активності до нової кнопки
-  clickedElement.classList.add('categories__btn--active');
-  /////////////////////
+  //  видаляю клас актів з усіх кнопок
 
-  products.innerHTML = ''; // очищаємо список, якщо він був
-  currentPage = 1; //  початок з першої сторінки
+  const categoriesBtnAll = document.querySelectorAll('.categories__btn'); // тільки тут, т.як це динамічний елемент
+  categoriesBtnAll.forEach(btn =>
+    btn.classList.remove('categories__btn--active')
+  );
 
-  let items = [];
+  // додаю актів на кнопку яку клікнув
+
+  event.target.classList.add('categories__btn--active');
+
+  //
+  refs.products.innerHTML = ''; // очищає стару розмітку
+  currentPage = 1; //  щоб кожного разу початок з першої сторінки
+
+  let listOfProducts = []; // зберігаю виклик по категорії або all
+
   try {
+    // що відмалювати при натисканні кнопки
     if (category === 'All') {
-      items = await getProducts(currentPage);
+      // кнопка "all"
+      listOfProducts = await getProductsList(currentPage);
+      console.log(category);
+      console.log(listOfProducts);
     } else {
-      items = await getProductsByCategory(category, currentPage);
-    }
-    // Якщо товарів немає — показати повідомлення
-    if (!items.length) {
-      notFound.classList.add('not-found--visible');
-      loadMoreBtn.classList.add('hidden'); //  ховаємо кнопку
-      return;
-    } else {
-      notFound.classList.remove('not-found--visible');
-    }
-    console.log('btn-category', items);
-
-    createMarkupProducts(items);
-
-    // Показати кнопку, якщо є ще товари (рівно 12 — імовірність, що ще будуть)
-
-    if (items.length === 12) {
-      loadMoreBtn.classList.remove('hidden');
-    } else {
-      loadMoreBtn.classList.add('hidden');
+      // інші кнопки
+      listOfProducts = await getProductsByCategory(category, currentPage);
+      console.log(category);
+      console.log(listOfProducts);
     }
     //
+
+    // Якщо товарів немає — показати повідомлення
+    if (!listOfProducts.length) {
+      refs.notFound.classList.add('not-found--visible');
+      refs.loadMoreBtn.classList.add('hidden'); //  ховаємо кнопку
+      return;
+    } else {
+      refs.notFound.classList.remove('not-found--visible');
+    }
+
+    // треба відмалювати отриманий масив по 12 шт,  -   createMarkupProducts(dataProducts);
+    // але перед цим очистити розмітку - refs.products.innerHTML = '';
+    createMarkupProducts(listOfProducts); // роблю розмітку
+
+    // Показати кнопку, якщо є ще товари (рівно 12 — імовірність, що ще будуть) - ???
+
+    if (listOfProducts.length === 12) {
+      refs.loadMoreBtn.classList.remove('hidden');
+    } else {
+      refs.loadMoreBtn.classList.add('hidden');
+    }
   } catch (error) {
     console.log(error);
   }
-
-  // getProducnsByCategory(category);
-  // при кліку виводится назва кнопки
-  // при кліку в обрану категорію потрібно прочитати текстовий контент кнопки
-  // console.log('category', category);
 }
 
-//         Функція обробки Load More
+//
+//
+//                        Функція обробки Load More
+//
+//
 
-export async function handleLoadMore() {
-  currentPage += 1;
+export async function handleClickLoadMore(event) {
+  currentPage++;
 
   try {
-    let items = [];
-
+    let moreOfProducts = []; // зберігаю виклик по категорії або усі
     if (currentCategory === 'All') {
-      items = await getProducts(currentPage);
+      moreOfProducts = await getProductsList(currentPage);
     } else {
-      items = await getProductsByCategory(currentCategory, currentPage);
+      moreOfProducts = await getProductsByCategory(
+        currentCategory,
+        currentPage
+      );
     }
 
-    if (!items.length) {
-      loadMoreBtn.classList.add('hidden');
+    if (!moreOfProducts.length) {
+      //якщо масив пустий - ховаємо кнопку
+      refs.loadMoreBtn.classList.add('hidden');
       return;
     }
 
-    createMarkupProducts(items);
-    console.log('btn-load-More', items);
+    /////           додатково/окремо  для  пошуку -  сабміт форми
 
-    if (items.length < 12) {
-      loadMoreBtn.classList.add('hidden');
+    if (isSearchMode) {
+      const moreProducts = await getSearchProducts(
+        currentSearchQuery,
+        currentPage
+      ); // додає товари до списку
+    }
+
+    /////
+
+    createMarkupProducts(moreOfProducts);
+    console.log('btnLoad', moreOfProducts);
+
+    if (moreOfProducts.length < 12) {
+      refs.loadMoreBtn.classList.add('hidden');
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 }
 
-//       клік по картці
+//
+//
+//                               клік по картці продукта  -  модальне вікно
+//
+//
+//
+export let globalProductCartId;
 
-export async function handleClickProductCard(event) {
-  const productItem = event.target.closest('.products__item');
-  if (!productItem) return;
+export async function handleClickProductsCart(event) {
+  // console.log('click', event.target);
+  // зробити клік по картці з усім вмістом
 
-  const productId = productItem.dataset.id;
-  if (!productId) return;
+  const productCartItem = event.target.closest('.products__item');
+
+  if (!productCartItem) {
+    // зупинити якщо не картка
+    return;
+  }
+
+  // взяти id картки
+
+  const productCartId = productCartItem.dataset.id;
+
+  if (!productCartId) {
+    // зупинити якщо немає id
+    return;
+  }
 
   try {
-    const product = await getProductById(productId);
+    //  зробити запит на сервер по id
+    const product = await getProductsById(productCartId); // отримаю картку продукта
+    console.log('id', productCartId);
+    // console.log('product', product);
+
+    globalProductCartId = productCartId;
+
+    //  відмалювати розмітку модального вікна
     renderModalProduct(product);
+    //  відкрити модальне вікно - прописати функцію відкриття у modal.js
     openModal();
   } catch (error) {
-    console.error('Error loading product', error);
+    console.log(error);
   }
 }
 
-//              обробка сабміту форми пошуку
+//
+//
+//                           форма пошуку продуктів
+//
+//
+let isSearchMode = false;
+let currentSearchQuery = '';
+//   для Load More
+//
+//
 
-export async function handleSearchSubmit(event) {
+export async function handleSubmitSearchForm(event) {
   event.preventDefault();
 
-  const query = searchInput.value.trim();
-  if (!query) return;
+  //https://dummyjson.com/products/search?q=nail - пошук продукту по ключовому слову
+  //  при сабміті запит на бекенд по ендпоінту №4 підставивши value інпута в url.
+  //  отримати інпут та цйого значення, підставити це значення у запит на сервер
+
+  // console.log('form', refs.searchFormInput.value.trim()); // при кліку по кнопці обирається введене значення
+  const queryInput = refs.searchFormInput.value.trim(); //    отримати значення інпута
+
+  if (!queryInput || '') {
+    //якщо пустий рядок або запит
+    return;
+  }
+  console.log(queryInput);
 
   try {
-    const result = await searchProducts(query, 1);
-    products.innerHTML = '';
+    const searchProducts = await getSearchProducts(
+      queryInput,
+      (currentPage = 1)
+    ); //викликаю функцію запиту, передаю їй параметр пошуку (інпут) -
+    console.log(searchProducts); //  отримую масив об'єктів  за запитом
 
-    if (!result.length) {
-      notFound.classList.add('not-found--visible');
-      loadMoreBtn.classList.add('hidden');
+    // викликати розмітку та передати їй отриманий масив
+    refs.products.innerHTML = ''; // очищає стару розмітку
+
+    createMarkupProducts(searchProducts); // зробити розмітку - передати результат запиту на сервер
+
+    // додати кнопку ЩЕ
+    isSearchMode = true;
+    currentSearchQuery = queryInput;
+    currentPage = 1;
+    //
+
+    if (!searchProducts.length) {
+      refs.notFound.classList.add('not-found--visible');
+      refs.loadMoreBtn.classList.add('hidden');
     } else {
-      createMarkupProducts(result);
-      notFound.classList.remove('not-found--visible');
-      loadMoreBtn.classList.add('hidden'); //  не використовуємо load more для пошуку
+      refs.notFound.classList.remove('not-found--visible');
+      refs.loadMoreBtn.classList.remove('hidden'); //   використовуємо load more для пошуку
     }
   } catch (error) {
-    console.error('Search error', error);
+    console.log(error);
   }
 }
 
-//    обробка енопки очистити пошук
-
-export async function handleClearSearch() {
-  searchInput.value = '';
-  clearSearchBtn.classList.add('hidden');
+//
+//
+//                     хрестик - очищення  input  пошуку
+//
+//
+export async function handleSearchClearBtn(event) {
+  refs.searchFormInput.value = ''; // очищаю інпут
 
   try {
-    const result = await getProducts(1);
-    products.innerHTML = '';
-
-    if (!result.length) {
-      notFound.classList.add('not-found--visible');
-    } else {
-      createMarkupProducts(result);
-      notFound.classList.remove('not-found--visible');
-      loadMoreBtn.classList.remove('hidden'); //  знову показуємо load more
-    }
+    const startResult = await getProductsList(1); //  запит на сервер - як з початку
+    refs.products.innerHTML = ''; //  очистити розмітку
+    createMarkupProducts(startResult); //  відмалювати розмітку
+    refs.notFound.classList.remove('not-found--visible'); // приховати div notFound
   } catch (error) {
-    console.error('Clear search error', error);
+    console.log(error);
   }
-}
-
-//       Обробка кліку по кнопці в модалці
-
-export function handleCartBtnClick(event) {
-  const btn = event.target;
-  const productId = Number(btn.closest('.modal-product').dataset.id);
-
-  if (!productId) return;
-
-  if (isInCart(productId)) {
-    removeFromCart(productId);
-    btn.textContent = 'Add to Cart';
-  } else {
-    addToCart(productId);
-    btn.textContent = 'Remove from Cart';
-  }
-
-  updateCartCounter(); // оновити лічильник у хедері
-}
-
-//              Wishlist
-
-export function handleWishlistBtnClick(event) {
-  const btn = event.target;
-  const productId = Number(btn.closest('.modal-product').dataset.id);
-  if (!productId) return;
-
-  if (isInWishlist(productId)) {
-    removeFromWishlist(productId);
-    btn.textContent = 'Add to Wishlist';
-  } else {
-    addToWishlist(productId);
-    btn.textContent = 'Remove from Wishlist';
-  }
-
-  updateWishlistCounter(); // оновлення лічильника
 }
