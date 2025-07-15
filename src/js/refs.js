@@ -7,7 +7,7 @@ export const refs = {
   notFound: document.querySelector('.not-found'),
 
   //           модальне вікно
-
+  modalBackdrop: document.querySelector('modal-backdrop'),
   modalWindow: document.querySelector('.modal'),
   modalContent: document.querySelector('.modal__content'),
   modalCloseBtn: document.querySelector('.modal__close-btn'), // хрестик
