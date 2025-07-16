@@ -12,13 +12,13 @@ export const refs = {
   modalContent: document.querySelector('.modal__content'),
   modalCloseBtn: document.querySelector('.modal__close-btn'), // хрестик
   modalProduct: document.querySelector('.modal-product'),
-  modalProductBtnCart: document.querySelector('.modal-product__btn--cart'), //  кнопка додавання товару у кошик
+  modalProductBtnCart: document.querySelector('.modal-product__btn--cart'), //  кнопка - Add to Cart - у кошик
+  modalProductBtnWisch: document.querySelector('.modal-product__btn--wishlist'), // кнопка - Add to Wishlist
 
   //          пошук товарів
-
   searchForm: document.querySelector('.search-form'), // форма пошуку
   searchFormInput: document.querySelector('.search-form__input'), //   input
   searchClearBtn: document.querySelector('.search-form__btn-clear'), // хрестик - очищення пошуку
 
-  //              кошик
+  //
 };
