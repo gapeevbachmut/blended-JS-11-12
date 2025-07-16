@@ -5,12 +5,8 @@
   top: 0;
   left: 0;
   z-index: 1000;
-<<<<<<< HEAD
 
   display: flex;
-=======
-  display: none;
->>>>>>> ec104fe2ef48b394df86a884a75b3799a27ee512
   justify-content: center;
   align-items: center;
   width: 100%;
