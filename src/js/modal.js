@@ -14,6 +14,92 @@ export function openModal() {
   if (!selectProduct) {
     //  якщо id не має
     console.warn('Товар не знайдено!');
+//  переписати код
+//
+
+// В мене є елементи:
+// Модальне вікно   - modal__content - modalContent
+// Кнопка закриття – хрестик -  modalCloseBtn
+// Бекдроп - modal - modalWindow
+// Сдухач на хрестик
+// При відкритті модального вікна:
+// На модальне вікно додаеться із опен  - модалка відмальовується
+// Класс із опен переставити на модал контент
+// Додається слухач на  ескейп
+// Додається слухач на бекдроп ???
+// При закритті модального вікна:
+// З модалки прибирається із опен – модалка зникає
+// Прибирається слухач з ескейп
+// Прибирається слухач з бекдропа
+// При кліку на ескейп вмикаємо функцію закриття модального вікна
+// При кліку на бекдроп вмикаємо закриття вікна
+// open модальне вікно, при кліку, на картку продукту, у хендлерс
+/////////////////////////////////////////////////////////////////
+
+// слухач на хрестик
+refs.modalCloseBtn.addEventListener('click', closeModal);
+
+export function openModal() {
+  refs.modalWindow.classList.add('modal--is-open');
+  // слухач на ескейп
+  window.addEventListener('keydown', onEscKeyPress);
+  // слухач на бекдроп
+  refs.modalBackdrop.addEventListener('click', onBackdropClick);
+}
+
+export function closeModal() {
+  // ховаємо модадку
+  refs.modalWindow.classList.remove('modal--is-open');
+  // прибираємо слухачі
+  window.removeEventListener('keydown', onEscKeyPress);
+  refs.modalBackdrop.removeEventListener('click', onBackdropClick);
+}
+
+// Закриття по Escape
+function onEscKeyPress(event) {
+  if (event.key === 'Escape') {
+    closeModal();
+  }
+}
+
+// Закриття по кліку на бекдроп
+function onBackdropClick(event) {
+  if (event.target === event.currentTarget) {
+    closeModal();
+  }
+}
+
+//при кліку на хрестик прибрати з модалки клас опен, додати сдухач на хрестик
+export function handleClickModalCloseBtn(event) {
+  refs.modalWindow.classList.remove('modal--is-open');
+  // console.log('fun-close');
+}
+handleClickModalCloseBtn(); // перенести
+
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
+
+//
+//
+// додати закриття при кліку за модалкою, та ескейпом
+//
+//
+
+//           додавання у кошик
+
+//
+//   слухач на модалку, у функцію прописати клік по кнопці
+//     клік по кнопці  -  Add to cart
+refs.modalContent.addEventListener('click', handleClickModalContent);
+function handleClickModalContent(event) {
+  if (event.target.classList.contains('modal-product__btn--cart')) {
+    console.log('клік по  -  Add to cart - 2');
+  }
+
+  const modalProduct = event.target.closest('.modal__content');
+  if (!modalProduct) {
+    console.warn('Елемент .modal-product не знайдено');
     return;
   }
 
