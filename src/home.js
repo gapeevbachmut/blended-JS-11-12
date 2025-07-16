@@ -9,7 +9,7 @@ import { getAllCategoryList, getProductsList } from './js/products-api';
 
 import { refs } from './js/refs';
 
-import { handleClickModalCloseBtn } from './js/modal';
+// import { handleClickModalCloseBtn } from './js/modal';
 
 import {
   handleClickCategoriesBtn,
@@ -24,7 +24,7 @@ import {
 refs.categories.addEventListener('click', handleClickCategoriesBtn); // кнопки з категоріями товарів
 refs.loadMoreBtn.addEventListener('click', handleClickLoadMore); // кнопка Load More
 refs.products.addEventListener('click', handleClickProductsCart); // картка продукта - модальне вікно
-refs.modalCloseBtn.addEventListener('click', handleClickModalCloseBtn); // кнопка закриття модалки
+// refs.modalCloseBtn.addEventListener('click', handleClickModalCloseBtn); // кнопка закриття модалки
 refs.searchForm.addEventListener('submit', handleSubmitSearchForm); // сабміт форми
 refs.searchClearBtn.addEventListener('click', handleSearchClearBtn); // Слухач на кнопку "×"
 
@@ -32,17 +32,17 @@ refs.searchClearBtn.addEventListener('click', handleSearchClearBtn); // Слух
 let currentPage = 1;
 let currentCategory = 'All';
 
-//
+///////////////////// створення стартової сторінки
 
 async function initMainPage() {
   try {
-    const categoryList = await getAllCategoryList();
-    console.log('categoryList', categoryList); //отримаємо масив значень  - список усіх категорій
-    createMarkupList(categoryList);
+    const categoryList = await getAllCategoryList(); // отримуємо значення
+    // console.log('categoryList', categoryList); //отримаємо масив значень  - список усіх категорій
+    createMarkupList(categoryList); // відмальовуємо кнопки
 
-    const productsList = await getProductsList();
-    console.log('productsList', productsList);
-    createMarkupProducts(productsList);
+    const productsList = await getProductsList(); // отримуємо  масив продуктів
+    // console.log('productsList', productsList);  масив об'ктів - продуктів
+    createMarkupProducts(productsList); // відмальовуємо продукти
   } catch (error) {
     console.log(error);
     iziToast.error({
@@ -51,3 +51,5 @@ async function initMainPage() {
   }
 }
 initMainPage();
+
+//////////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!

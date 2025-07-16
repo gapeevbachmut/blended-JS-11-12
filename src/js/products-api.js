@@ -10,13 +10,16 @@ const productCartId = '/:id'; // ???  з енд поінтом не працює
 
 // створити функції для усіх необхідних запитів на  сервер
 
+/////////////////////////////////////////////// запит на сервер для отримання списку категорій (для кнопок)
 export async function getAllCategoryList() {
   const { data } = await axios(`${BASE_URL}${END_POINT.category_list}`); //  запит на сервер
   data.unshift('All'); // Додає "All" в початок масиву категорій
+  console.log('список категорій для кнопок', data);
+
   return data;
 }
 
-//  запит на список продуктів з пагінацією
+/////////////////////////////////////////////  запит на список продуктів з пагінацією
 
 export async function getProductsList(currentPage = 1) {
   const { data } = await axios(
@@ -25,7 +28,7 @@ export async function getProductsList(currentPage = 1) {
   return data.products;
 }
 
-// запит на ендпоінт по категорії з пагінацією
+////////////////////////////////////////////// запит на сервер по категорії з пагінацією
 
 export async function getProductsByCategory(category, currentPage = 1) {
   const { data } = await axios(
@@ -34,6 +37,7 @@ export async function getProductsByCategory(category, currentPage = 1) {
   // console.log(data.products); // отримаємо масив продуктів за категорією
   return data.products;
 }
+///////////////////////////////////////////////////////////
 
 // запит на ендпоінт по id
 

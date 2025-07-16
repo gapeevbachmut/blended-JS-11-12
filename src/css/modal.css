@@ -4,7 +4,7 @@
   left: 0;
   z-index: 1000;
 
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -12,12 +12,9 @@
 
   background: rgba(0, 0, 0, 0.5);
 
-  &.modal--is-open {
-    display: flex;
-  }
+  opacity: 0;
+  visibility: hidden;
 }
-
-
 
 .modal__content {
   position: relative;
@@ -32,6 +29,16 @@
   animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-30px);
+  transition: transform 2000ms ease, opacity 300ms ease;
+}
+
+.modal--is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1.05);
 }
 
 .modal-product {

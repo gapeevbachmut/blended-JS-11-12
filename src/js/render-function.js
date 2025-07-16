@@ -2,6 +2,7 @@
 
 import { refs } from './refs';
 
+/////////////////////////////////////////////// створення кнопок категорій
 export function createMarkupList(data) {
   const allList = data
     .map(
@@ -14,7 +15,7 @@ export function createMarkupList(data) {
   refs.categories.insertAdjacentHTML('beforeend', allList);
 }
 
-//          розмітка  карток   продуктів
+///////////////////////////////////////        розмітка  карток   продуктів
 
 export function createMarkupProducts(data) {
   const markupProducts = data
@@ -29,16 +30,14 @@ export function createMarkupProducts(data) {
       <p class="products__brand"><span class="products__brand--bold">Brand:${brand}</span></p>
       <p class="products__category">Category: ${category}</p>
       <p class="products__price">Price: ${price} $</p>
-   </li>
-  
-      `
+   </li>       `
     )
     .join('');
   refs.products.insertAdjacentHTML('beforeend', markupProducts);
 }
-
+//////////////////////////////////////////////
 //
-//          розмітка  модального  вікна
+/////////////////////////////////////////////         розмітка  модального  вікна
 //
 
 export function renderModalProduct(product) {
@@ -72,3 +71,4 @@ export function renderModalProduct(product) {
 `;
   refs.modalProduct.innerHTML = modalProductMarkup;
 }
+///////////////////////////!!!!!!!!!!!!!!!!!!!!!!

@@ -26,7 +26,8 @@ export async function handleClickCategoriesBtn(event) {
   //
   // чи натиснута саме кнопка
   if (!event.target.classList.contains('categories__btn')) {
-    console.log('not btn');
+    // я кщо клік не на кнопку - зупинити функцію
+    // console.log('not btn');
     return;
   }
 
@@ -54,14 +55,14 @@ export async function handleClickCategoriesBtn(event) {
     // що відмалювати при натисканні кнопки
     if (category === 'All') {
       // кнопка "all"
-      listOfProducts = await getProductsList(currentPage);
-      console.log(category);
-      console.log(listOfProducts);
+      listOfProducts = await getProductsList(currentPage); //  запит на сервер
+      // console.log(category);
+      // console.log(listOfProducts);
     } else {
       // інші кнопки
-      listOfProducts = await getProductsByCategory(category, currentPage);
-      console.log(category);
-      console.log(listOfProducts);
+      listOfProducts = await getProductsByCategory(category, currentPage); //  запит на сервер
+      // console.log(category);
+      // console.log(listOfProducts);
     }
     //
 
@@ -100,11 +101,15 @@ export async function handleClickLoadMore(event) {
   currentPage++;
 
   try {
+    //////////////////////  !!!!!!!!!!
     let moreOfProducts = []; // зберігаю виклик по категорії або усі
     if (currentCategory === 'All') {
-      moreOfProducts = await getProductsList(currentPage);
+      // якщо категорія = all являється  true
+      moreOfProducts = await getProductsList(currentPage); // запит на список ВСІХ продуктів
     } else {
+      //  якщо інша категорія
       moreOfProducts = await getProductsByCategory(
+        // запит на список продуктів та поточна сторінка
         currentCategory,
         currentPage
       );
@@ -146,11 +151,12 @@ export async function handleClickLoadMore(event) {
 //
 export let globalProductCartId;
 
+// обробник при кліку на картку продукту, на головній сторінці
 export async function handleClickProductsCart(event) {
   // console.log('click', event.target);
   // зробити клік по картці з усім вмістом
 
-  const productCartItem = event.target.closest('.products__item');
+  const productCartItem = event.target.closest('.products__item'); //  на яку саме картку був клік
 
   if (!productCartItem) {
     // зупинити якщо не картка
@@ -158,7 +164,6 @@ export async function handleClickProductsCart(event) {
   }
 
   // взяти id картки
-
   const productCartId = productCartItem.dataset.id;
 
   if (!productCartId) {
@@ -168,7 +173,7 @@ export async function handleClickProductsCart(event) {
 
   try {
     //  зробити запит на сервер по id
-    const product = await getProductsById(productCartId); // отримаю картку продукта
+    const product = await getProductsById(productCartId); // запит з id продукту
     console.log('id', productCartId);
     // console.log('product', product);
 
@@ -176,12 +181,15 @@ export async function handleClickProductsCart(event) {
 
     //  відмалювати розмітку модального вікна
     renderModalProduct(product);
+
     //  відкрити модальне вікно - прописати функцію відкриття у modal.js
-    openModal();
+    openModal(productCartId); // передаємо id продукту
   } catch (error) {
     console.log(error);
   }
 }
+
+//////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //
 //
