@@ -12,7 +12,7 @@ import { createMarkupProducts, renderModalProduct } from './render-function';
 
 //
 
-let currentPage = 1; // тут зберігаємо поточну сторінку
+let currentPage = 1; // тут зберігаю поточну сторінку
 let currentCategory; // категорія при кліку на кнопку
 
 //
@@ -46,7 +46,7 @@ export async function handleClickCategoriesBtn(event) {
   event.target.classList.add('categories__btn--active');
 
   //
-  refs.products.innerHTML = ''; // очищає стару розмітку
+  refs.products.innerHTML = ''; // очищю стару розмітку
   currentPage = 1; //  щоб кожного разу початок з першої сторінки
 
   let listOfProducts = []; // зберігаю виклик по категорії або all
@@ -149,47 +149,36 @@ export async function handleClickLoadMore(event) {
 //
 //
 //
-export let globalProductCartId;
-
 // обробник при кліку на картку продукту, на головній сторінці
-export async function handleClickProductsCart(event) {
-  // console.log('click', event.target);
+
+export async function handleClickProductsCard(event) {
   // зробити клік по картці з усім вмістом
+  const productCardItem = event.target.closest('.products__item'); //  на яку саме картку був клік
 
-  const productCartItem = event.target.closest('.products__item'); //  на яку саме картку був клік
-
-  if (!productCartItem) {
+  if (!productCardItem) {
     // зупинити якщо не картка
     return;
   }
 
   // взяти id картки
-  const productCartId = productCartItem.dataset.id;
-
-  if (!productCartId) {
-    // зупинити якщо немає id
-    return;
-  }
+  const productCardId = productCardItem.dataset.id;
+  // console.log('productCardId', productCardId);
 
   try {
     //  зробити запит на сервер по id
-    const product = await getProductsById(productCartId); // запит з id продукту
-    console.log('id', productCartId);
+    const product = await getProductsById(productCardId); // запит з id продукту
+    // console.log('id', productCardId);
     // console.log('product', product);
-
-    globalProductCartId = productCartId;
 
     //  відмалювати розмітку модального вікна
     renderModalProduct(product);
 
     //  відкрити модальне вікно - прописати функцію відкриття у modal.js
-    openModal(productCartId); // передаємо id продукту
+    openModal(productCardId); // передаємо id продукту
   } catch (error) {
     console.log(error);
   }
 }
-
-//////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //
 //

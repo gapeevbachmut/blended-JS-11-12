@@ -36,7 +36,6 @@ export function createMarkupProducts(data) {
   refs.products.insertAdjacentHTML('beforeend', markupProducts);
 }
 //////////////////////////////////////////////
-//
 /////////////////////////////////////////////         розмітка  модального  вікна
 //
 
@@ -56,7 +55,7 @@ export function renderModalProduct(product) {
       <img class="modal-product__img" src="${
         images?.[0] || ''
       }" alt="${title}" />
-      <div class="modal-product__content">
+      <div class="modal-product__content" data-product-id="${id}">
         <p class="modal-product__title">${title}</p>
         <p class="modal-product-id hidden>${id}</p>
         <ul class="modal-product__tags">${tags
@@ -71,4 +70,3 @@ export function renderModalProduct(product) {
 `;
   refs.modalProduct.innerHTML = modalProductMarkup;
 }
-///////////////////////////!!!!!!!!!!!!!!!!!!!!!!
